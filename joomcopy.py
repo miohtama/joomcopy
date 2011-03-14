@@ -60,6 +60,8 @@ mysql_master_settings = {
 VIRTUALHOST_TEMPLATE = """
 <VirtualHost *:80>
 	ServerAdmin webmaster@localhost
+        ServerName %(instance_name)s
+        ServerAlias www.%(instance_name)s
 
 	DocumentRoot %(target_path)s
 
@@ -138,7 +140,7 @@ def scp(source, target):
         
         # Use Max. compression level
         # http://blog.mfabrik.com/2011/03/02/scp-file-copy-with-on-line-compression/
-        sexec("scp -C -o CompressionLevel=9 -r %s %s" % (source, target))
+        sexec("scp -C -o CompressionLevel=9 %s %s" % (source, target))
 
 def rsync(source, target):
         """ Run rsync copy.
@@ -201,7 +203,7 @@ def mutate_config(config_file, output_file):
             return parts[1].strip(), parts[3]
 
         def output_config_value(key, value):
-            print >> output, "\t var $%s = '%s'"% (key, value)
+            print >> output, "\t var $%s = '%s';"% (key, value)
 
 
         for line in input:
